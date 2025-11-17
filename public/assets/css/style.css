@@ -1,0 +1,51 @@
+/* Start Global */
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+ul {
+	list-style: none;
+}
+a {
+	text-decoration: none;
+}
+body {
+	padding: 30px;
+}
+/* End Global */
+
+/* Start Navbar */
+nav {
+	display: flex;
+}
+
+nav ul {
+	display: flex;
+}
+
+nav ul li a {
+	display: block;
+	border: 1px solid black;
+	padding: 4px 12px;
+}
+/* End Navbar */
+
+/* Start Articles */
+.articles-wrapper .article-link {
+	display: block;
+}
+
+article .article-info ul {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	background-color: #ededed;
+	padding: 4px 8px ;
+}
+article .article-info ul li {
+	background-color: #cecece;
+	padding: 4px 12px;
+	border-radius: 6px;
+}
+/* End Articles */
