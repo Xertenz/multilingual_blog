@@ -2,19 +2,19 @@
 $lang = get_lang();
 ?>
 
-<nav>
-	<div class="container">
+<nav class="bg-red-200 mb-6">
+	<div class="container mx-auto flex">
 		<div class="logo-wrapper"></div>
 		<div class="nav-menu-wrapper">
-			<ul>
+			<ul class="flex">
 				<li>
-					<a href="index.php?lang=<?=$lang?>"><?= $languages[$lang]['home'] ?></a>
+					<a href="index.php?lang=<?=$lang?>"><?= $languages[$lang]['nav']['home'] ?></a>
 				</li>
 				<li>
-					<a href="categories.php?lang=<?=$lang?>"><?= $languages[$lang]['categories'] ?></a>
+					<a href="categories.php?lang=<?=$lang?>"><?= $languages[$lang]['nav']['categories'] ?></a>
 				</li>
 				<li>
-					<a href="articles.php?lang=<?=$lang?>"><?= $languages[$lang]['articles'] ?></a>
+					<a href="articles.php?lang=<?=$lang?>"><?= $languages[$lang]['nav']['articles'] ?></a>
 				</li>
 			</ul>
 		</div>

@@ -2,14 +2,18 @@
 
 $languages = [
 	"ar" => [
-		'home'=> 'الرئيسية',
-		"categories" => "الفئات",
-		'articles' => 'المقالات',
+		"nav" => [
+			'home'=> 'الرئيسية',
+			"categories" => "الفئات",
+			'articles' => 'المقالات',
+		]
 	],
 	"en" => [
-		'home'=> 'Home',
-		"categories" => "Categories",
-		'articles' => 'Articles',
+		"nav" => [
+			'home'=> 'Home',
+			"categories" => "Categories",
+			'articles' => 'Articles',
+		]
 	],
 ];
 
