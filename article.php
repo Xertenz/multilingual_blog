@@ -28,20 +28,22 @@ $meta_description = htmlspecialchars($article_info['meta_description'], ENT_QUOT
 	<?php require_once "./navbar.php" ?>
 
 	<div class="article-wrapper">
-		<article>
-			<div class="article-title">
-				<h1><?= htmlspecialchars($article_info['title'], ENT_QUOTES, 'UTF-8') ?></h1>
-			</div>
-			<div class="article-content">
-				<p><?= $article_info['description'] ?></p>
+		<div class="container">
+			<article>
+				<div class="article-title">
+					<h1><?= htmlspecialchars($article_info['title'], ENT_QUOTES, 'UTF-8') ?></h1>
 				</div>
-			<div class="article-info">
-				<ul>
-					<li><?= date("Y-m-d", strtotime($article_info['updated_at']))?></li>
-					<li><?= $category_info['name'] ?></li>
-				</ul>
-			</div>
-		</article>
+				<div class="article-content">
+					<p><?= $article_info['description'] ?></p>
+					</div>
+				<div class="article-info">
+					<ul>
+						<li><?= date("Y-m-d", strtotime($article_info['updated_at']))?></li>
+						<li><?= $category_info['name'] ?></li>
+					</ul>
+				</div>
+			</article>
+		</div>
 	</div>
 	
 	<?php require_once './templates/footer.php'; ?>

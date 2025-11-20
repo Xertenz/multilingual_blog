@@ -211,11 +211,11 @@ function category_exists($category_id) {
 	return $stmt->rowCount();
 }
 
-function add_new_arabic_article($category_id, $featured_img, $title, $description, $meta_title, $meta_description) {
+function add_new_arabic_article($category_id, $slug, $featured_img, $title, $description, $meta_title, $meta_description) {
 	global $conn;
-	$sql = "INSERT INTO articles (category_id, featured_img, views, status, created_at, updated_at) VALUES (?, ?, 0, 'published', CURRENT_DATE(), CURRENT_DATE() )";
+	$sql = "INSERT INTO articles (category_id, slug, featured_img, views, status) VALUES (?, ?, ?, 0, 'published' )";
 	$stmt = $conn->prepare($sql);
-	$stmt->execute([$category_id, $featured_img]);
+	$stmt->execute([$category_id, $slug, $featured_img]);
 
 	$sql = "INSERT INTO article_translations (article_id, language_code, title, description, meta_title, meta_description, created_at, updated_at) 
 VALUES (LAST_INSERT_ID(), 'ar', ?, ?, ?, ?, CURRENT_DATE(), CURRENT_DATE())";

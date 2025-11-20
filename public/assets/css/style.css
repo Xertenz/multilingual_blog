@@ -24,14 +24,6 @@ nav ul li a:hover {
 /* End Navbar */
 
 /* Start Articles */
-.articles-wrapper .container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-}
-.articles-wrapper .article-link {
-  display: block;
-}
-
 .article {
   background: white;
   border-radius: 12px;
