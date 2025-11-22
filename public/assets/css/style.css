@@ -1,4 +1,19 @@
 /* Start Global */
+:root {
+  --arabic-font: "Noto Naskh Arabic", serif;
+  --english-font: "Roboto", "Arial", sans-serif;
+}
+
+body[lang="ar"] {
+  font-family: var(--arabic-font);
+  line-height: 1.8;
+}
+
+body[lang="en"] {
+  font-family: var(--english-font);
+  line-height: 1.6;
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -78,3 +93,13 @@ article .article-info ul li {
   border-radius: 6px;
 }
 /* End Articles */
+
+/* Start Single Article */
+.article-wrapper .article-title h1 {
+  width: fit-content;
+}
+.article-wrapper .article-content img {
+  max-width: 100%;
+  height: auto;
+}
+/* End Single Article */

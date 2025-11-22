@@ -10,8 +10,8 @@ function get_lang() {
 	return $lang;
 }
 
-function redirect_to_home() {
-	header("Location: index.php");
+function redirect_to_home(string $lang):void {
+	header("Location: ".SITE_URL."?lang=$lang");
 	die;
 }
 
@@ -31,9 +31,9 @@ function get_all_articles($lang) {
 	return $all_articles;
 }
 
-function get_article($lang, $article_id) {
+function get_article(string $lang, int $article_id) {
 	global $conn;
-	$sql = "SELECT * FROM article_translations at JOIN articles a ON at.article_id = a.id WHERE at.id=:id AND at.language_code=:language_code";
+	$sql = "SELECT a.*, at.* FROM article_translations at LEFT JOIN articles a ON at.article_id = a.id WHERE a.id=:id AND at.language_code=:language_code";
 	$stmt = $conn->prepare($sql);
 	$stmt->bindParam(":language_code", $lang);
 	$stmt->bindParam(":id", $article_id);
@@ -213,14 +213,14 @@ function category_exists($category_id) {
 
 function add_new_arabic_article($category_id, $slug, $featured_img, $title, $description, $meta_title, $meta_description) {
 	global $conn;
-	$sql = "INSERT INTO articles (category_id, slug, featured_img, views, status) VALUES (?, ?, ?, 0, 'published' )";
+	$sql = "INSERT INTO articles (category_id, featured_img, views, status) VALUES (?, ?, 0, 'published' )";
 	$stmt = $conn->prepare($sql);
-	$stmt->execute([$category_id, $slug, $featured_img]);
+	$stmt->execute([$category_id, $featured_img]);
 
-	$sql = "INSERT INTO article_translations (article_id, language_code, title, description, meta_title, meta_description, created_at, updated_at) 
-VALUES (LAST_INSERT_ID(), 'ar', ?, ?, ?, ?, CURRENT_DATE(), CURRENT_DATE())";
+	$sql = "INSERT INTO article_translations (article_id, language_code, slug, title, description, meta_title, meta_description, created_at, updated_at) 
+VALUES (LAST_INSERT_ID(), 'ar', ?, ?, ?, ?, ?, CURRENT_DATE(), CURRENT_DATE())";
 	$stmt = $conn->prepare($sql);
-	$stmt->execute([$title, $description, $meta_title, $meta_description]);
+	$stmt->execute([$slug, $title, $description, $meta_title, $meta_description]);
 }
 
 function check_img_ext($file) {
@@ -247,6 +247,94 @@ function get_article_from_translation($article_id, $columns=null) {
 	$stmt->execute([$article_id]);
 	$main_article = $stmt->fetch(PDO::FETCH_ASSOC);
 	return $main_article;
+}
+
+function is_article_slug_exists(string $slug, int $excepted_id = null):bool {
+    global $conn;
+    $sql = "SELECT slug FROM article_translations WHERE slug = :slug";
+    if($excepted_id) {
+        $sql .= " AND id <> :excepted_id";
+    }
+    $sql .= " LIMIT 1";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(":slug", $slug);
+    if($excepted_id) {
+        $stmt->bindParam(":excepted_id", $excepted_id);
+    }
+	$stmt->execute();
+    return $stmt->rowCount() ? true : false;
+}
+
+function update_article($lang, $article_id, $cat_id, $slug, $title, $description, $meta_title, $meta_description, $featured_img=null) {
+    global $conn;
+    $sql = "UPDATE article_translations
+        SET
+            slug = :slug,
+            title = :title,
+            description = :description,
+            meta_title = :meta_title,
+            meta_description = :meta_description,
+            updated_at = CURRENT_DATE()
+        WHERE
+            article_id = :article_id
+        AND
+            language_code = :language_code
+        ";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(":slug", $slug);
+    $stmt->bindParam(":title", $title);
+    $stmt->bindParam(":description", $description);
+    $stmt->bindParam(":meta_title", $meta_title);
+    $stmt->bindParam(":meta_description", $meta_description);
+    $stmt->bindParam(":article_id", $article_id);
+    $stmt->bindParam(":language_code", $lang);
+    $stmt->execute();
+
+    $sql2 = "UPDATE articles
+        SET 
+            category_id = :category_id
+        WHERE
+            id = :article_id
+        ";
+    $stmt = $conn->prepare($sql2);
+    $stmt->bindParam(":category_id", $cat_id);
+    $stmt->bindParam(":article_id", $article_id);
+    $stmt->execute();
+
+    if($featured_img) {
+        /*
+        $featured_img_info = uploadAndOptimizeFeaturedImage($featured_img);
+        $featured_img_main_name = $featured_img_info['main_image'];
+        */
+        $sql3 = "SELECT featured_img FROM articles WHERE id = ? LIMIT 1";
+        $stmt = $conn->prepare($sql3);
+        $stmt->execute([$article_id]);
+        $main_article = $stmt->fetch(PDO::FETCH_ASSOC);
+        $prev_featured_img_main_name = $main_article['featured_img'];
+
+        $featured_img_info = uploadAndOptimizeFeaturedImage($featured_img);
+        $new_featured_img_main_name = $featured_img_info['main_image'];
+
+        $sql4 = "UPDATE articles
+            SET 
+                featured_img = :new_featured_img_main_name
+            WHERE
+                id = :article_id
+            ";
+        $stmt = $conn->prepare($sql4);
+        $stmt->bindParam(":new_featured_img_main_name", $new_featured_img_main_name);
+        $stmt->bindParam(":article_id", $article_id);
+        $stmt->execute();
+
+        $prev_featured_img_path = FEATURED_UPLOAD_BASE_DIR.$prev_featured_img_main_name;
+        if(file_exists( $prev_featured_img_path ) && is_file($prev_featured_img_path)){
+            unlink( $prev_featured_img_path );
+        }
+        $prev_thumb_featured_img_path = FEATURED_UPLOAD_BASE_DIR.'thumb_'.$prev_featured_img_main_name;
+        if(file_exists( $prev_thumb_featured_img_path ) && is_file($prev_thumb_featured_img_path)){
+            unlink( $prev_thumb_featured_img_path );
+        }
+    }
 }
 
 

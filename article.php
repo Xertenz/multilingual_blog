@@ -10,7 +10,7 @@ $article_id = $_GET['id'];
 if(isset($article_id) && $article_id != '' && (int)$article_id == $article_id) {
 	$article_id = (int)$_GET['id'];
 }else{
-	redirect_to_home();
+	redirect_to_home($lang);
 }
 
 // Get info about the article and it's category
@@ -31,7 +31,7 @@ $meta_description = htmlspecialchars($article_info['meta_description'], ENT_QUOT
 		<div class="container">
 			<article>
 				<div class="article-title">
-					<h1><?= htmlspecialchars($article_info['title'], ENT_QUOTES, 'UTF-8') ?></h1>
+					<h1 class=""><?= htmlspecialchars($article_info['title'], ENT_QUOTES, 'UTF-8') ?></h1>
 				</div>
 				<div class="article-content">
 					<p><?= $article_info['description'] ?></p>
